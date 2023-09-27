@@ -1,8 +1,15 @@
 import { Route, Routes } from "react-router-dom";
-import Bikes from "./bikes/Bikes";
+
 import { AuthorizedRoute } from "./auth/AuthorizedRoute";
-import Login from "./auth/Login";
+
 import Register from "./auth/Register";
+import Login from "./auth/Login";
+import { Home } from "./home/home";
+import { UserProfileList } from "./UserProfileList";
+import { UserProfileDetails } from "./UserProfileDetails";
+import { ChoresList } from "./chores/ChoresList";
+import { ChoreDetails } from "./chores/choreDetails";
+import { CreateChore } from "./chores/createChore";
 
 export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
  return (
@@ -12,15 +19,48 @@ export default function ApplicationViews({ loggedInUser, setLoggedInUser }) {
      index
      element={
       <AuthorizedRoute loggedInUser={loggedInUser}>
-       <Bikes />
+       <Home />
       </AuthorizedRoute>
      }
     />
     <Route
-     path="create"
+     path="/chores"
+     index
      element={
       <AuthorizedRoute loggedInUser={loggedInUser}>
-       <CreateWorkOrder />
+       <ChoresList loggedInUser={loggedInUser} />
+      </AuthorizedRoute>
+     }
+    />
+    <Route
+     path="chores/:id"
+     element={
+      <AuthorizedRoute roles={["Admin"]} loggedInUser={loggedInUser}>
+       <ChoreDetails />
+      </AuthorizedRoute>
+     }
+    />
+    <Route
+     path="addChore"
+     element={
+      <AuthorizedRoute roles={["Admin"]} loggedInUser={loggedInUser}>
+       <CreateChore />
+      </AuthorizedRoute>
+     }
+    />
+    <Route
+     path="userprofiles"
+     element={
+      <AuthorizedRoute loggedInUser={loggedInUser} roles={["Admin"]}>
+       <UserProfileList />
+      </AuthorizedRoute>
+     }
+    />
+    <Route
+     path="userprofiles/:id"
+     element={
+      <AuthorizedRoute loggedInUser={loggedInUser} roles={["Admin"]}>
+       <UserProfileDetails />
       </AuthorizedRoute>
      }
     />

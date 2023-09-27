@@ -3,6 +3,7 @@ using System;
 using HouseRules.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 
@@ -11,9 +12,10 @@ using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 namespace HouseRules.Migrations
 {
     [DbContext(typeof(HouseRulesDbContext))]
-    partial class HouseRulesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230925161208_InitialUpdate")]
+    partial class InitialUpdate
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -41,7 +43,7 @@ namespace HouseRules.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Chores");
+                    b.ToTable("Chore");
 
                     b.HasData(
                         new
@@ -101,7 +103,7 @@ namespace HouseRules.Migrations
 
                     b.HasIndex("UserProfileId");
 
-                    b.ToTable("ChoreAssignments");
+                    b.ToTable("ChoreAssignment");
 
                     b.HasData(
                         new
@@ -135,9 +137,6 @@ namespace HouseRules.Migrations
                     b.Property<int>("ChoreId")
                         .HasColumnType("integer");
 
-                    b.Property<DateTime>("CompletedOn")
-                        .HasColumnType("timestamp without time zone");
-
                     b.Property<int>("UserProfileId")
                         .HasColumnType("integer");
 
@@ -153,22 +152,7 @@ namespace HouseRules.Migrations
                         new
                         {
                             Id = 1,
-                            ChoreId = 4,
-                            CompletedOn = new DateTime(2023, 9, 25, 15, 0, 0, 0, DateTimeKind.Unspecified),
-                            UserProfileId = 1
-                        },
-                        new
-                        {
-                            Id = 2,
-                            ChoreId = 3,
-                            CompletedOn = new DateTime(2023, 9, 23, 12, 0, 0, 0, DateTimeKind.Unspecified),
-                            UserProfileId = 1
-                        },
-                        new
-                        {
-                            Id = 3,
-                            ChoreId = 5,
-                            CompletedOn = new DateTime(2023, 9, 22, 19, 0, 0, 0, DateTimeKind.Unspecified),
+                            ChoreId = 1,
                             UserProfileId = 1
                         });
                 });
@@ -239,7 +223,7 @@ namespace HouseRules.Migrations
                         new
                         {
                             Id = "c3aaeb97-d2ba-4a53-a521-4eea61e59b35",
-                            ConcurrencyStamp = "3d9af9c9-0e40-4a2c-a3a8-9358b15e23ae",
+                            ConcurrencyStamp = "dfbea435-3d9c-4282-8aba-4cb4ef433592",
                             Name = "Admin",
                             NormalizedName = "admin"
                         });
@@ -338,13 +322,13 @@ namespace HouseRules.Migrations
                         {
                             Id = "dbc40bc6-0829-4ac5-a3ed-180f5e916a5f",
                             AccessFailedCount = 0,
-                            ConcurrencyStamp = "6430cfe8-7b86-452d-bd45-919b0e0fc666",
+                            ConcurrencyStamp = "16bee430-7fa6-4c6f-b29b-038ce441759e",
                             Email = "admina@strator.comx",
                             EmailConfirmed = false,
                             LockoutEnabled = false,
-                            PasswordHash = "AQAAAAEAACcQAAAAEEsPo5F/NpQdErurrr4jKK/HUa/6eX9HKKguKV1q64rfEulbRoLTux9ek/heNeOpGA==",
+                            PasswordHash = "AQAAAAEAACcQAAAAEMOri89SXPQfiqSzgmL5E96YcMp7Fw6zwjkSugdnWnMbvrTfJ/pncApQhtQ5I/I4lA==",
                             PhoneNumberConfirmed = false,
-                            SecurityStamp = "f7fb9271-3345-433a-9a06-d87808c5620a",
+                            SecurityStamp = "f4b663e5-3a77-4d40-a9b0-6f461cf52cd5",
                             TwoFactorEnabled = false,
                             UserName = "Administrator"
                         });
@@ -441,7 +425,7 @@ namespace HouseRules.Migrations
             modelBuilder.Entity("HouseRules.Models.ChoreAssignment", b =>
                 {
                     b.HasOne("HouseRules.Models.Chore", "Chore")
-                        .WithMany("ChoreAssignments")
+                        .WithMany()
                         .HasForeignKey("ChoreId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
@@ -538,8 +522,6 @@ namespace HouseRules.Migrations
 
             modelBuilder.Entity("HouseRules.Models.Chore", b =>
                 {
-                    b.Navigation("ChoreAssignments");
-
                     b.Navigation("ChoreCompletions");
                 });
 

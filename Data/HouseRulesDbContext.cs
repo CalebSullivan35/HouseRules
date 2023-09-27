@@ -3,11 +3,14 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using HouseRules.Models;
 using Microsoft.AspNetCore.Identity;
 
+
 namespace HouseRules.Data;
 public class HouseRulesDbContext : IdentityDbContext<IdentityUser>
 {
     private readonly IConfiguration _configuration;
     public DbSet<UserProfile> UserProfiles { get; set; }
+    public DbSet<Chore> Chores { get; set; }
+    public DbSet<ChoreAssignment> ChoreAssignments { get; set; }
 
     public HouseRulesDbContext(DbContextOptions <HouseRulesDbContext> context, IConfiguration config) : base(context)
     {
@@ -46,6 +49,92 @@ public class HouseRulesDbContext : IdentityDbContext<IdentityUser>
             LastName = "Strator",
             Address = "101 Main Street",
         });
-       
+
+    modelBuilder.Entity<Chore>().HasData(new Chore[]
+    {
+      new Chore
+      {
+        Id = 1,
+        Name = "Vacuum FLoors",
+        Difficulty = 2,
+        ChoreFrequencyDays = 7,
+
+      },
+      new Chore
+      {
+        Id = 2,
+        Name = "Wash Dishes",
+        Difficulty = 1,
+        ChoreFrequencyDays = 1,
+
+      },
+      new Chore
+      {
+        Id = 3,
+        Name = "Clean Bathrooms",
+        Difficulty = 3,
+        ChoreFrequencyDays = 7,
+
+      },
+      new Chore
+      {
+        Id = 4,
+        Name = "Laundry",
+        Difficulty = 2,
+        ChoreFrequencyDays = 7,
+
+      },
+      new Chore
+      {
+        Id = 5,
+        Name = "Mow Yard",
+        Difficulty = 4,
+        ChoreFrequencyDays = 14,
+      },
+    });
+
+    modelBuilder.Entity<ChoreAssignment>().HasData(new ChoreAssignment[]
+    {
+        new ChoreAssignment
+        {
+          Id = 1,
+          UserProfileId = 1,
+          ChoreId = 4,
+        },
+        new ChoreAssignment
+        {
+          Id = 2,
+          UserProfileId = 1,
+          ChoreId = 3,
+        },
+        new ChoreAssignment
+        {
+          Id = 3,
+          UserProfileId = 1,
+          ChoreId = 5,
+        },
+    });
+
+    modelBuilder.Entity<ChoreCompletion>().HasData(new ChoreCompletion[]
+    {
+      new ChoreCompletion{
+        Id = 1,
+        UserProfileId =1,
+        ChoreId = 4,
+        CompletedOn = new DateTime(2023,9,25,15,0,0)
+      },
+      new ChoreCompletion{
+        Id = 2,
+        UserProfileId =1,
+        ChoreId = 3,
+        CompletedOn = new DateTime(2023,9,23,12,0,0)
+      },
+      new ChoreCompletion{
+        Id = 3,
+        UserProfileId =1,
+        ChoreId = 5,
+        CompletedOn = new DateTime(2023,9,22,19,0,0)
+      }
+    });
     }
 }
