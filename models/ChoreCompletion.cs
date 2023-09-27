@@ -8,4 +8,5 @@ public class ChoreCompletion
   public int ChoreId { get; set; }
   public Chore Chore { get; set; }
   public DateTime CompletedOn { get; set; }
+  
 }

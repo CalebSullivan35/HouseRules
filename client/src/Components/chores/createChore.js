@@ -7,6 +7,7 @@ export const CreateChore = () => {
  const [newDifficulty, setDifficulty] = useState(1);
  const [newFrequency, setFrequency] = useState(1);
  const [choreName, setChoreName] = useState("");
+ const [errors, setErrors] = useState([]);
  const navigate = useNavigate();
  const handleDifficultyChange = (e) => {
   setDifficulty(e.target.value);
@@ -16,19 +17,20 @@ export const CreateChore = () => {
   setFrequency(e.target.value);
  };
 
- const handleSubmitButton = () => {
-  if (choreName === "") {
-   console.log("Please put a name in for the chore");
-   return;
-  }
-
+ const handleCreateChore = (evt) => {
+  evt.preventDefault();
   const newChore = {
-   Name: choreName,
-   Difficulty: parseInt(newDifficulty),
-   ChoreFrequencyDays: parseInt(newFrequency),
+   name: choreName,
+   difficulty: newDifficulty,
+   choreFrequencyDays: newFrequency,
   };
-  console.log(newChore);
-  createChore(newChore).then(navigate("/chores"));
+  createChore(newChore).then((res) => {
+   if (res.errors) {
+    setErrors(res.errors);
+   } else {
+    navigate("/chores");
+   }
+  });
  };
 
  return (
@@ -70,15 +72,20 @@ export const CreateChore = () => {
      </select>
     </div>
     <Button
-     onClick={() => {
-      handleSubmitButton();
+     onClick={(e) => {
+      handleCreateChore(e);
      }}
     >
      Submit New Product
     </Button>
    </div>
+   <div style={{ color: "red" }}>
+    {Object.keys(errors).map((key) => (
+     <p key={key}>
+      {key}: {errors[key].join(",")}
+     </p>
+    ))}
+   </div>
   </>
  );
 };
-
-// onChange={(e) => setFrequency(e.target.value)}

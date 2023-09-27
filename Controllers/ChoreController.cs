@@ -27,7 +27,7 @@ public class ChoreController : ControllerBase {
     [Authorize]
     public IActionResult Get()
     {
-        return Ok(_dbContext.Chores.ToList());
+        return Ok(_dbContext.Chores.Include(c => c.ChoreAssignments).Include(c=>c.ChoreCompletions).ToList());
     }
 
   [HttpGet("{id}")]
@@ -70,7 +70,7 @@ public IActionResult CreateChore(Chore chore)
 {
     _dbContext.Chores.Add(chore);
     _dbContext.SaveChanges();
-    return Ok();
+    return Created($"/api/chore/{chore.Id}", chore);
 }
 
 [HttpPut("{id}")]
@@ -109,12 +109,12 @@ public IActionResult DeleteChore(int id)
     return NoContent();
 }
 
-[HttpPost("{id}/assign")]
+[HttpPost("{userId}/assign")]
 [Authorize (Roles = "Admin")]
-public IActionResult AssignChore(Chore chore, int id)
+public IActionResult AssignChore(int choreId, int userId)
 {
-    UserProfile foundUser = _dbContext.UserProfiles.SingleOrDefault(up => up.Id == id);
-    Chore foundChore = _dbContext.Chores.SingleOrDefault(c => c.Id == id);
+    UserProfile foundUser = _dbContext.UserProfiles.SingleOrDefault(up => up.Id == userId);
+    Chore foundChore = _dbContext.Chores.SingleOrDefault(c => c.Id == choreId);
     if (foundChore == null || foundUser == null)
     {
       return NotFound();
@@ -132,13 +132,13 @@ public IActionResult AssignChore(Chore chore, int id)
 }
 
 
-[HttpPost("{id}/unassign")]
+[HttpPost("{userId}/unassign")]
 [Authorize (Roles = "Admin")]
-public IActionResult UnassignChore(Chore chore, int id)
+public IActionResult UnassignChore(int choreId, int userId)
 {
-    UserProfile foundUser = _dbContext.UserProfiles.SingleOrDefault(up => up.Id == id);
-    Chore foundChore = _dbContext.Chores.SingleOrDefault(c => c.Id == id);
-    ChoreAssignment foundAssignment = _dbContext.ChoreAssignments.SingleOrDefault(ca => ca.ChoreId == chore.Id && ca.UserProfileId == foundUser.Id);
+    UserProfile foundUser = _dbContext.UserProfiles.SingleOrDefault(up => up.Id == userId);
+    Chore foundChore = _dbContext.Chores.SingleOrDefault(c => c.Id == choreId);
+    ChoreAssignment foundAssignment = _dbContext.ChoreAssignments.SingleOrDefault(ca => ca.ChoreId == foundChore.Id && ca.UserProfileId == foundUser.Id);
     if (foundChore == null || foundUser == null || foundAssignment == null)
     {
       return NotFound();
@@ -148,5 +148,15 @@ public IActionResult UnassignChore(Chore chore, int id)
     return NoContent();
 }
 
+[HttpGet("mychores/{userId}")]
+[Authorize]
+public IActionResult GetMyChores(int userId)
+{
+    return Ok(_dbContext.ChoreAssignments
+    .Include(ca => ca.Chore)
+    .ThenInclude(c => c.ChoreCompletions)
+    .Where(ca => ca.UserProfileId == userId)
+    );
+}
 
 }

@@ -21,6 +21,12 @@ export const ChoresList = ({ loggedInUser }) => {
   deleteChore(id).then(getdata());
  }
 
+ //handle if chore is or is not
+ const checkChore = (chore) => {
+  const className = chore.isOverdue ? "redtext" : "";
+  return <p className={className}>{chore.name}</p>;
+ };
+
  return (
   <>
    <Button
@@ -43,14 +49,16 @@ export const ChoresList = ({ loggedInUser }) => {
     <tbody>
      {choresList.map((c) => (
       <tr key={c.id}>
-       <td>{c.name}</td>
+       <td>{checkChore(c)}</td>
        <td>{c.choreFrequencyDays} Days</td>
        <td>{c.difficulty}</td>
        <td>
         <Button
          color="primary"
          onClick={() => {
-          completeChore(loggedInUser.id, c.id);
+          completeChore(loggedInUser.id, c.id).then(() => {
+           getdata();
+          });
          }}
         >
          Complete

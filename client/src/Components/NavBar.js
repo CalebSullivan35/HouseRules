@@ -30,7 +30,12 @@ export default function NavBar({ loggedInUser, setLoggedInUser }) {
        <Nav navbar>
         <NavItem onClick={() => setOpen(false)}>
          <NavLink tag={RRNavLink} to="/chores">
-          chores
+          Chores
+         </NavLink>
+        </NavItem>
+        <NavItem onClick={() => setOpen(false)}>
+         <NavLink tag={RRNavLink} to="/mychores">
+          My Chores
          </NavLink>
         </NavItem>
         {loggedInUser.roles.includes("Admin") ? (
